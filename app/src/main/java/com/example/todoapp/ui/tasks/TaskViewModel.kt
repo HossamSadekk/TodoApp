@@ -6,5 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 
 @HiltViewModel
 class TaskViewModel constructor(taskRepository: TaskRepository) : ViewModel() {
+    val taskRepository = taskRepository
+    fun getTasks() =
+        taskRepository.getTasks()
 
 }
