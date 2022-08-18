@@ -1,12 +1,17 @@
 package com.example.todoapp.ui.tasks
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.todoapp.R
 import com.example.todoapp.adapters.TasksAdapter
 import com.example.todoapp.databinding.FragmentTasksBinding
+import com.example.todoapp.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,9 +30,41 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
                 setHasFixedSize(true)
             }
         }
-        viewModel.getTasks().observe(viewLifecycleOwner){
+        viewModel.tasks.observe(viewLifecycleOwner){
             tasksAdapter.submitList(it)
         }
+
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_fragment_tasks,menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.onQueryTextChanged{
+            // Search Query
+            viewModel.searchQuery.value = it
+        }
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       return when(item.itemId){
+            R.id.action_search -> {
+                 true
+            }
+            R.id.sort_by_date -> {
+                true
+            }
+           R.id.action_hide_completed_tasks ->{
+               true
+           }
+           R.id.action_delete_all_completed_tasks -> {
+               true
+           }
+           else -> super.onOptionsItemSelected(item)
+       }
     }
 
     override fun onDestroyView() {

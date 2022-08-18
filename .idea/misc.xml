@@ -5,10 +5,13 @@
       <map>
         <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/drawable/add.xml" value="0.1605" />
         <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.1005" />
+        <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/drawable/search.xml" value="0.124" />
+        <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/drawable/sort.xml" value="0.1" />
         <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/layout/activity_main.xml" value="0.1671654553227875" />
         <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/layout/fragment_add_edit_tasl.xml" value="0.25" />
         <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/layout/fragment_tasks.xml" value="0.264" />
         <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/layout/item_task.xml" value="0.264" />
+        <entry key="..\:/Users/Hossam/Downloads/TodoApp/app/src/main/res/menu/menu_fragment_tasks.xml" value="0.2" />
       </map>
     </option>
   </component>
