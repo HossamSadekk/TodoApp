@@ -1,6 +1,7 @@
 package com.example.todoapp.data
 
 import androidx.room.*
+import com.example.todoapp.ui.tasks.Sort
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,6 +16,15 @@ interface TaskDao {
     @Delete
     suspend fun delete(task: Task)
 
-    @Query("SELECT * FROM task_table WHERE name LIKE '%' || :searchQuery || '%' ")
-    fun getTasks(searchQuery: String): Flow<List<Task>>
+    fun getTask(query: String, sort: Sort, hide: Boolean): Flow<List<Task>> =
+        when (sort) {
+            Sort.BY_DATE -> getTasksSortedByDate(query, hide)
+            Sort.BY_NAME -> getTasksSortedByName(query, hide)
+        }
+
+    @Query("SELECT * FROM task_table WHERE (completed != :hide OR completed = 0) AND name LIKE '%' || :searchQuery || '%' ORDER BY important DESC,name")
+    fun getTasksSortedByName(searchQuery: String, hide: Boolean): Flow<List<Task>>
+
+    @Query("SELECT * FROM task_table WHERE (completed != :hide OR completed = 0) AND name LIKE '%' || :searchQuery || '%' ORDER BY important DESC,created")
+    fun getTasksSortedByDate(searchQuery: String, hide: Boolean): Flow<List<Task>>
 }
