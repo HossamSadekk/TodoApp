@@ -77,7 +77,8 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     // DataStore
-    implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 
     // Fragment
     implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
