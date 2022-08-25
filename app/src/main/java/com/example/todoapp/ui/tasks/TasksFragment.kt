@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.todoapp.R
 import com.example.todoapp.adapters.TasksAdapter
 import com.example.todoapp.data.Sort
+import com.example.todoapp.data.Task
 import com.example.todoapp.databinding.FragmentTasksBinding
 import com.example.todoapp.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TasksFragment : Fragment(R.layout.fragment_tasks) {
+class TasksFragment : Fragment(R.layout.fragment_tasks),TasksAdapter.OnItemClickListener {
     private val viewModel: TaskViewModel by viewModels()
     private var binding: FragmentTasksBinding? = null
 
@@ -28,7 +29,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTasksBinding.bind(view)
-        val tasksAdapter = TasksAdapter()
+        val tasksAdapter = TasksAdapter(this)
         binding?.apply {
             recyclerViewTasks.apply {
                 adapter = tasksAdapter
@@ -80,6 +81,14 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
            }
            else -> super.onOptionsItemSelected(item)
        }
+    }
+
+    override fun onItemClicked(task: Task) {
+        viewModel.onTaskSelected(task)
+    }
+
+    override fun onCheckBoxClick(task: Task, checkedState: Boolean) {
+        viewModel.onTaskStateChanged(task,checkedState)
     }
 
     override fun onDestroyView() {
