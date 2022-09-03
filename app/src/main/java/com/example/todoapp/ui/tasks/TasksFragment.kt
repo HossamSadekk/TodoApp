@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
@@ -17,6 +18,7 @@ import com.example.todoapp.adapters.TasksAdapter
 import com.example.todoapp.data.Sort
 import com.example.todoapp.data.Task
 import com.example.todoapp.databinding.FragmentTasksBinding
+import com.example.todoapp.utils.exhaustive
 import com.example.todoapp.utils.onQueryTextChanged
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,6 +56,10 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
                     viewModel.onTaskSwiped(task)
                 }
             }).attachToRecyclerView(recyclerViewTasks)
+
+            fabAddTasks.setOnClickListener {
+                viewModel.onAddItemClick()
+            }
         }
         viewModel.tasks.observe(viewLifecycleOwner) {
             tasksAdapter.submitList(it)
@@ -69,7 +75,15 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
                                 viewModel.onUndoDeleteClicked(event.task)
                             }.show()
                     }
-                }
+                    is TaskViewModel.TaskEvent.NavigateToAddTaskScreen -> {
+                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditFragment(null,"Add Task")
+                        findNavController().navigate(action)
+                    }
+                    is TaskViewModel.TaskEvent.NavigateToEditTaskScreen -> {
+                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditFragment(event.task,"Edit Task")
+                        findNavController().navigate(action)
+                    }
+                }.exhaustive
             }
         }
 
