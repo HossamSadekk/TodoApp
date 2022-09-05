@@ -7,8 +7,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,7 +22,6 @@ import com.example.todoapp.utils.exhaustive
 import com.example.todoapp.utils.onQueryTextChanged
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -61,27 +60,41 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
                 viewModel.onAddItemClick()
             }
         }
+
+        setFragmentResultListener("add_edit_request") { _, bundle ->
+            val result = bundle.getInt("add_edit_result")
+            viewModel.onAddEditResult(result)
+        }
+
         viewModel.tasks.observe(viewLifecycleOwner) {
             tasksAdapter.submitList(it)
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.taskEvent.collect{
-                event ->
-                when(event){
+            viewModel.taskEvent.collect { event ->
+                when (event) {
                     is TaskViewModel.TaskEvent.ShowUndoDeleteTaskMessage -> {
-                        Snackbar.make(requireView(),"Task Deleted",Snackbar.LENGTH_LONG)
-                            .setAction("Undo"){
+                        Snackbar.make(requireView(), "Task Deleted", Snackbar.LENGTH_LONG)
+                            .setAction("Undo") {
                                 viewModel.onUndoDeleteClicked(event.task)
                             }.show()
                     }
                     is TaskViewModel.TaskEvent.NavigateToAddTaskScreen -> {
-                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditFragment(null,"Add Task")
+                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditFragment(
+                            null,
+                            "Add Task"
+                        )
                         findNavController().navigate(action)
                     }
                     is TaskViewModel.TaskEvent.NavigateToEditTaskScreen -> {
-                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditFragment(event.task,"Edit Task")
+                        val action = TasksFragmentDirections.actionTasksFragmentToAddEditFragment(
+                            event.task,
+                            "Edit Task"
+                        )
                         findNavController().navigate(action)
+                    }
+                    is TaskViewModel.TaskEvent.ShowTaskSavedConfirmationMessage -> {
+                        Snackbar.make(requireView(), event.msg, Snackbar.LENGTH_LONG).show()
                     }
                 }.exhaustive
             }
@@ -121,6 +134,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
                 true
             }
             R.id.action_hide_completed_tasks -> {
+                item.isChecked = !item.isChecked
                 viewModel.onHideCompletedSelected(item.isChecked)
                 true
             }
