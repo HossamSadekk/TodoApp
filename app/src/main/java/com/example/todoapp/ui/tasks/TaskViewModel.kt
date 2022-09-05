@@ -2,6 +2,8 @@ package com.example.todoapp.ui.tasks
 
 import androidx.hilt.Assisted
 import androidx.lifecycle.*
+import com.example.todoapp.ADD_TASK_RESULT_OK
+import com.example.todoapp.EDIT_TASK_RESULT_OK
 import com.example.todoapp.data.PreferencesManager
 import com.example.todoapp.data.Sort
 import com.example.todoapp.data.Task
@@ -73,10 +75,27 @@ class TaskViewModel @Inject constructor(
             taskEventChannel.send(TaskEvent.NavigateToAddTaskScreen)
         }
 
+    fun onAddEditResult(result: Int) {
+        when (result) {
+            ADD_TASK_RESULT_OK -> {
+                showTaskMessage("Task Added Successfully")
+            }
+            EDIT_TASK_RESULT_OK -> {
+                showTaskMessage("Task Updated Successfully")
+            }
+        }
+    }
+
+    private fun showTaskMessage(msg: String) =
+        viewModelScope.launch {
+            taskEventChannel.send(TaskEvent.ShowTaskSavedConfirmationMessage(msg))
+        }
+
     sealed class TaskEvent {
         object NavigateToAddTaskScreen : TaskEvent()
         data class NavigateToEditTaskScreen(val task: Task) : TaskEvent()
         data class ShowUndoDeleteTaskMessage(val task: Task) : TaskEvent()
+        data class ShowTaskSavedConfirmationMessage(val msg: String) : TaskEvent()
     }
 }
 
