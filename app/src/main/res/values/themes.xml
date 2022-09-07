@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.ToDoApp" parent="Theme.MaterialComponents.Light">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/tab_bar_color</item>
+        <item name="colorPrimary">@color/status_bar_color</item>
         <item name="colorPrimaryVariant">@color/status_bar_color</item>
         <item name="android:textColorPrimary">@color/black</item>
         <!-- Secondary brand color. -->
