@@ -20,10 +20,14 @@ interface TaskDao {
             Sort.BY_DATE -> getTasksSortedByDate(query, hide)
             Sort.BY_NAME -> getTasksSortedByName(query, hide)
         }
+
     // here in completed i wanna show only uncompleted tasks
     @Query("SELECT * FROM task_table WHERE (completed != :hide OR completed = 0) AND name LIKE '%' || :searchQuery || '%' ORDER BY important DESC,name")
     fun getTasksSortedByName(searchQuery: String, hide: Boolean): Flow<List<Task>>
 
     @Query("SELECT * FROM task_table WHERE (completed != :hide OR completed = 0) AND name LIKE '%' || :searchQuery || '%' ORDER BY important DESC,created")
     fun getTasksSortedByDate(searchQuery: String, hide: Boolean): Flow<List<Task>>
+
+    @Query("DELETE FROM task_table WHERE completed = 1")
+    suspend fun deleteAllCompleted()
 }
